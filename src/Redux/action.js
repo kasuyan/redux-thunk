@@ -1,6 +1,19 @@
-import { IS_LOGIN} from "./action-type"
+import { IS_LOGIN } from "./action-type";
 
-export const isLoing = status => ({
-  type: IS_LOGIN,
-  isLogin: status
-})
+// return Object
+export const isLogin = state => {
+  return {
+    type: IS_LOGIN,
+    isLogin: state
+  };
+};
+
+export const getLogin = state => {
+  return dispatch => {
+    dispatch(isLogin(state));
+  };
+};
+
+export const getLogout = state => {
+  dispatch(isLogout(state));
+};

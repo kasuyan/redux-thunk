@@ -25126,18 +25126,20 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.GET_LOGIN = exports.IS_LOGIN = void 0;
-var IS_LOGIN = "app/IS_LOGIN";
+exports.GET_LOGOUT = exports.GET_LOGIN = exports.IS_LOGIN = void 0;
+var IS_LOGIN = "APP/IS_LOGIN";
 exports.IS_LOGIN = IS_LOGIN;
-var GET_LOGIN = "app/GET_LOGIN";
+var GET_LOGIN = "TOP/IS_LOGIN";
 exports.GET_LOGIN = GET_LOGIN;
+var GET_LOGOUT = "TOP/IS_LOGIN";
+exports.GET_LOGOUT = GET_LOGOUT;
 },{}],"Redux/reducer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.isLogin = void 0;
+exports.default = void 0;
 
 var _actionType = require("./action-type");
 
@@ -25145,12 +25147,55 @@ var initialState = {
   isLogin: false
 };
 
-var isLogin = function isLogin() {
+var _default = function _default() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case 'IS_LOGIN':
+    case _actionType.IS_LOGIN:
+      return {
+        isLogin: action.isLogin
+      };
+
+    default:
+      return state;
+  }
+};
+
+exports.default = _default;
+},{"./action-type":"Redux/action-type.js"}],"components/pages/Top/Redux/action-type.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.IS_LOGIN = exports.GET_LOGOUT = exports.GET_LOGIN = void 0;
+var GET_LOGIN = "TOP/IS_LOGIN";
+exports.GET_LOGIN = GET_LOGIN;
+var GET_LOGOUT = "TOP/IS_LOGIN";
+exports.GET_LOGOUT = GET_LOGOUT;
+var IS_LOGIN = "TOP/IS_LOGIN";
+exports.IS_LOGIN = IS_LOGIN;
+},{}],"components/pages/Top/Redux/reducer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.onClickLogoutBtn = exports.onClickLoginBtn = exports.app = void 0;
+
+var _actionType = require("./action-type");
+
+var initialState = {
+  isLogin: false
+};
+
+var app = function app() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case "IS_LOGIN":
       return action.isLogin;
 
     default:
@@ -25158,8 +25203,38 @@ var isLogin = function isLogin() {
   }
 };
 
-exports.isLogin = isLogin;
-},{"./action-type":"Redux/action-type.js"}],"Redux/index.js":[function(require,module,exports) {
+exports.app = app;
+
+var onClickLoginBtn = function onClickLoginBtn() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case "GET_LOGIN":
+      return action;
+
+    default:
+      return state;
+  }
+};
+
+exports.onClickLoginBtn = onClickLoginBtn;
+
+var onClickLogoutBtn = function onClickLogoutBtn() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case "GET_LOGOUT":
+      return action;
+
+    default:
+      return state;
+  }
+};
+
+exports.onClickLogoutBtn = onClickLogoutBtn;
+},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"Redux/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25171,12 +25246,15 @@ var _redux = require("redux");
 
 var _reducer = require("./reducer");
 
+var _reducer2 = require("../components/pages/Top/Redux/reducer");
+
 var _default = (0, _redux.combineReducers)({
-  isLogin: _reducer.isLogin
+  onClickLoginBtn: _reducer2.onClickLoginBtn,
+  onClickLogoutBtn: _reducer2.onClickLogoutBtn
 });
 
 exports.default = _default;
-},{"redux":"../node_modules/redux/es/redux.js","./reducer":"Redux/reducer.js"}],"Redux/store.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","./reducer":"Redux/reducer.js","../components/pages/Top/Redux/reducer":"components/pages/Top/Redux/reducer.js"}],"Redux/store.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25188,19 +25266,31 @@ var _redux = require("redux");
 
 var _reduxThunk = _interopRequireDefault(require("redux-thunk"));
 
-var _index = _interopRequireDefault(require("./index"));
+var _reducer = _interopRequireDefault(require("./reducer"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// デバッグ用
 var composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 var AppStore = function AppStore(initialState) {
-  return (0, _redux.createStore)(_index.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk.default)));
+  var store = (0, _redux.createStore)(_reducer.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk.default)));
+
+  if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept("./index", function () {
+      var nextRootReducer = require("./index");
+
+      store.replaceReducer(nextRootReducer);
+    });
+  }
+
+  return store;
 };
 
 var _default = AppStore;
 exports.default = _default;
-},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./index":"Redux/index.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./reducer":"Redux/reducer.js","./index":"Redux/index.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -28987,7 +29077,43 @@ var _matchPath2 = _interopRequireDefault(require("./matchPath"));
 var _withRouter2 = _interopRequireDefault(require("./withRouter"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./BrowserRouter":"../node_modules/react-router-dom/es/BrowserRouter.js","./HashRouter":"../node_modules/react-router-dom/es/HashRouter.js","./Link":"../node_modules/react-router-dom/es/Link.js","./MemoryRouter":"../node_modules/react-router-dom/es/MemoryRouter.js","./NavLink":"../node_modules/react-router-dom/es/NavLink.js","./Prompt":"../node_modules/react-router-dom/es/Prompt.js","./Redirect":"../node_modules/react-router-dom/es/Redirect.js","./Route":"../node_modules/react-router-dom/es/Route.js","./Router":"../node_modules/react-router-dom/es/Router.js","./StaticRouter":"../node_modules/react-router-dom/es/StaticRouter.js","./Switch":"../node_modules/react-router-dom/es/Switch.js","./generatePath":"../node_modules/react-router-dom/es/generatePath.js","./matchPath":"../node_modules/react-router-dom/es/matchPath.js","./withRouter":"../node_modules/react-router-dom/es/withRouter.js"}],"components/pages/Top/index.js":[function(require,module,exports) {
+},{"./BrowserRouter":"../node_modules/react-router-dom/es/BrowserRouter.js","./HashRouter":"../node_modules/react-router-dom/es/HashRouter.js","./Link":"../node_modules/react-router-dom/es/Link.js","./MemoryRouter":"../node_modules/react-router-dom/es/MemoryRouter.js","./NavLink":"../node_modules/react-router-dom/es/NavLink.js","./Prompt":"../node_modules/react-router-dom/es/Prompt.js","./Redirect":"../node_modules/react-router-dom/es/Redirect.js","./Route":"../node_modules/react-router-dom/es/Route.js","./Router":"../node_modules/react-router-dom/es/Router.js","./StaticRouter":"../node_modules/react-router-dom/es/StaticRouter.js","./Switch":"../node_modules/react-router-dom/es/Switch.js","./generatePath":"../node_modules/react-router-dom/es/generatePath.js","./matchPath":"../node_modules/react-router-dom/es/matchPath.js","./withRouter":"../node_modules/react-router-dom/es/withRouter.js"}],"components/pages/Top/Redux/actions.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getLogout = exports.getLogin = exports.isLogin = void 0;
+
+var _actionType = require("./action-type");
+
+// import { isLogin } from "../../../../Redux/action";
+var isLogin = function isLogin(status) {
+  return {
+    type: _actionType.IS_LOGIN,
+    status: status
+  };
+};
+
+exports.isLogin = isLogin;
+
+var getLogin = function getLogin(status) {
+  return function (dispatch) {
+    dispatch(isLogin(true));
+  };
+};
+
+exports.getLogin = getLogin;
+
+var getLogout = function getLogout(status) {
+  return {
+    type: _actionType.GET_LOGOUT,
+    status: status
+  };
+};
+
+exports.getLogout = getLogout;
+},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"components/pages/Top/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28996,6 +29122,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+var _reactRedux = require("react-redux");
+
+var _redux = require("redux");
+
+var _actions = require("./Redux/actions");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29031,15 +29163,34 @@ function (_React$Component) {
   _createClass(Top, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"));
+      var getLogin = this.props.getLogin;
+      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"), _react.default.createElement("p", null, this.props.isLogin ? "ログインしてるよ" : "ログインしてないよ"), _react.default.createElement("button", {
+        onClick: getLogin
+      }, "\u30ED\u30B0\u30A4\u30F3"), _react.default.createElement("button", null, "\u30ED\u30B0\u30A2\u30A6\u30C8"));
     }
   }]);
 
   return Top;
 }(_react.default.Component);
 
-exports.default = Top;
-},{"react":"../node_modules/react/index.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
+var mapStateToProps = function mapStateToProps(state) {
+  return state;
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return (0, _redux.bindActionCreators)({
+    getLogin: _actions.getLogin,
+    getLogout: _actions.getLogout
+  }, dispatch);
+}; // export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(Top);
+
+
+var _default = Top;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29048,6 +29199,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+var _reactRedux = require("react-redux");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29090,8 +29243,14 @@ function (_React$Component) {
   return Page1;
 }(_react.default.Component);
 
-exports.default = Page1;
-},{"react":"../node_modules/react/index.js"}],"components/pages/Page2/index.js":[function(require,module,exports) {
+var mapStateToProps = function mapStateToProps(state) {
+  return state;
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps)(Page1);
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js"}],"components/pages/Page2/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29273,7 +29432,40 @@ function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = Router;
-},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","./components/pages/Top":"components/pages/Top/index.js","./components/pages/Page1":"components/pages/Page1/index.js","./components/pages/Page2":"components/pages/Page2/index.js","./components/pages/Page3":"components/pages/Page3/index.js"}],"app.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","./components/pages/Top":"components/pages/Top/index.js","./components/pages/Page1":"components/pages/Page1/index.js","./components/pages/Page2":"components/pages/Page2/index.js","./components/pages/Page3":"components/pages/Page3/index.js"}],"Redux/action.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getLogout = exports.getLogin = exports.isLogin = void 0;
+
+var _actionType = require("./action-type");
+
+// return Object
+var isLogin = function isLogin(state) {
+  return {
+    type: _actionType.IS_LOGIN,
+    isLogin: state
+  };
+};
+
+exports.isLogin = isLogin;
+
+var getLogin = function getLogin(state) {
+  return function (dispatch) {
+    dispatch(isLogin(state));
+  };
+};
+
+exports.getLogin = getLogin;
+
+var getLogout = function getLogout(state) {
+  dispatch(isLogout(state));
+};
+
+exports.getLogout = getLogout;
+},{"./action-type":"Redux/action-type.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29286,6 +29478,8 @@ var _react = _interopRequireDefault(require("react"));
 var _router = _interopRequireDefault(require("./router"));
 
 var _reactRedux = require("react-redux");
+
+var _action = require("./Redux/action");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29329,7 +29523,11 @@ function (_React$Component) {
         href: "/page2"
       }, "Page2")), _react.default.createElement("li", null, _react.default.createElement("a", {
         href: "/page3"
-      }, "Page3"))), _react.default.createElement(_router.default, null));
+      }, "Page3"))), _react.default.createElement("button", {
+        onClick: this.props.getLogin
+      }, "\u30ED\u30B0\u30A4\u30F3"), _react.default.createElement("button", {
+        onClick: this.props.getLogout
+      }, "\u30ED\u30B0\u30A2\u30A6\u30C8"), _react.default.createElement(_router.default, null));
     }
   }]);
 
@@ -29337,15 +29535,24 @@ function (_React$Component) {
 }(_react.default.Component);
 
 var mapStateToProps = function mapStateToProps(state) {
+  return state;
+};
+
+var mapDispachToProps = function mapDispachToProps(dispath) {
   return {
-    isLogin: state.isLogin
+    getLogin: function getLogin() {
+      dispath((0, _action.getLogin)(true));
+    },
+    getLogout: function getLogout() {
+      dispath((0, _action.isLogin)(false));
+    }
   };
 };
 
-var _default = (0, _reactRedux.connect)(mapStateToProps)(App);
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispachToProps)(App);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./router":"router.js","react-redux":"../node_modules/react-redux/es/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./router":"router.js","react-redux":"../node_modules/react-redux/es/index.js","./Redux/action":"Redux/action.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -29356,16 +29563,22 @@ var _reactRedux = require("react-redux");
 
 var _store = _interopRequireDefault(require("./Redux/store"));
 
+var _redux = require("redux");
+
+var _reducer = require("./Redux/reducer");
+
 var _app = _interopRequireDefault(require("./app"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _store.default)();
+// middlewar react-thunkを追加
+var store = (0, _store.default)(); // 通常のstore
+// const store = createStore(reducer);
 
 _reactDom.default.render(_react.default.createElement(_reactRedux.Provider, {
   store: store
-}, _react.default.createElement(_app.default, null)), document.getElementById('app'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-redux":"../node_modules/react-redux/es/index.js","./Redux/store":"Redux/store.js","./app":"app.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+}, _react.default.createElement(_app.default, null)), document.getElementById("app"));
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","react-redux":"../node_modules/react-redux/es/index.js","./Redux/store":"Redux/store.js","redux":"../node_modules/redux/es/redux.js","./Redux/reducer":"Redux/reducer.js","./app":"app.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -29392,7 +29605,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52524" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51522" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

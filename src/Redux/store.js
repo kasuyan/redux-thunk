@@ -1,14 +1,26 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './index';
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import rootReducer from "./reducer";
 
+// デバッグ用
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 const AppStore = initialState => {
-  return createStore(
+  const store = createStore(
     rootReducer,
     initialState,
     composeEnhancers(applyMiddleware(thunk))
   );
-}
 
-export default AppStore
+  if (module.hot) {
+    // Enable Webpack hot module replacement for reducers
+    module.hot.accept("./index", () => {
+      const nextRootReducer = require("./index");
+      store.replaceReducer(nextRootReducer);
+    });
+  }
+
+  return store;
+};
+
+export default AppStore;

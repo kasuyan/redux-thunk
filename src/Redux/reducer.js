@@ -1,14 +1,14 @@
-import { IS_LOGIN } from "./action-type"
+import { IS_LOGIN } from "./action-type";
 
 const initialState = {
   isLogin: false
-}
+};
 
-export const isLogin = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
-    case 'IS_LOGIN':
-      return action.isLogin;
+    case IS_LOGIN:
+      return { isLogin: action.isLogin };
     default:
       return state;
   }
-}
+};
