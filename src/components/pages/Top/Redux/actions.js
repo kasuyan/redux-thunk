@@ -1,20 +1,11 @@
-import { GET_LOGIN, GET_LOGOUT, IS_LOGIN } from "./action-type";
-// import { isLogin } from "../../../../Redux/action";
+import { IS_OPEN } from "./action-type";
 
-export const isLogin = status => {
-  return {
-    type: IS_LOGIN,
-    status
-  };
-};
-
-export const getLogin = status => {
+// アクション時の動き
+export const onClickOpen = state => {
   return dispatch => {
-    dispatch(isLogin(true));
+    dispatch({
+      type: IS_OPEN,
+      state
+    });
   };
 };
-
-export const getLogout = status => ({
-  type: GET_LOGOUT,
-  status
-});

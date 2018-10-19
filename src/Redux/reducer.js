@@ -1,7 +1,8 @@
 import { IS_LOGIN } from "./action-type";
 
 const initialState = {
-  isLogin: false
+  isLogin: false,
+  hoge: "かすや"
 };
 
 export default (state = initialState, action) => {

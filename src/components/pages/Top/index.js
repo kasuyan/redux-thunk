@@ -1,32 +1,48 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { getLogin, getLogout } from "./Redux/actions";
+import * as Actions from "./Redux/actions";
 
-class Top extends React.Component {
+class Top extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    console.log("aaa", this.props);
+    const { onClickOpen } = this.props;
+    onClickOpen(true);
+  }
+
   render() {
-    const { getLogin } = this.props;
+    console.log("this.props", this.props);
+    const { isOpen, title } = this.props;
+
     return (
       <section>
         <h1>TOPです</h1>
-        <p>{this.props.isLogin ? "ログインしてるよ" : "ログインしてないよ"}</p>
-        <button onClick={getLogin}>ログイン</button>
-        <button>ログアウト</button>
+        <p>
+          今は
+          {String(isOpen)}
+          です
+        </p>
+        <button onClick={this.onClick}>オープン</button>
       </section>
     );
   }
 }
 
 const mapStateToProps = state => {
-  return state;
+  return state.Top;
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ getLogin, getLogout }, dispatch);
+  return bindActionCreators(Actions, dispatch);
 };
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(Top);
-export default Top;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Top);

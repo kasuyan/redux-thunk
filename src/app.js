@@ -39,7 +39,7 @@ const mapDispachToProps = dispath => {
       dispath(getLogin(true));
     },
     getLogout: () => {
-      dispath(isLogin(false));
+      dispath(getLogout(false));
     }
   };
 };

@@ -15,5 +15,7 @@ export const getLogin = state => {
 };
 
 export const getLogout = state => {
-  dispatch(isLogout(state));
+  return dispatch => {
+    dispatch(isLogin(state));
+  };
 };

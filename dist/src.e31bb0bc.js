@@ -25144,7 +25144,8 @@ exports.default = void 0;
 var _actionType = require("./action-type");
 
 var initialState = {
-  isLogin: false
+  isLogin: false,
+  hoge: "かすや"
 };
 
 var _default = function _default() {
@@ -25169,71 +25170,41 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.IS_LOGIN = exports.GET_LOGOUT = exports.GET_LOGIN = void 0;
-var GET_LOGIN = "TOP/IS_LOGIN";
-exports.GET_LOGIN = GET_LOGIN;
-var GET_LOGOUT = "TOP/IS_LOGIN";
-exports.GET_LOGOUT = GET_LOGOUT;
-var IS_LOGIN = "TOP/IS_LOGIN";
-exports.IS_LOGIN = IS_LOGIN;
+exports.IS_OPEN = void 0;
+var IS_OPEN = "TOP/IS_OPEN";
+exports.IS_OPEN = IS_OPEN;
 },{}],"components/pages/Top/Redux/reducer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.onClickLogoutBtn = exports.onClickLoginBtn = exports.app = void 0;
+exports.default = void 0;
 
 var _actionType = require("./action-type");
 
+// Reducerで初期値を設定
 var initialState = {
-  isLogin: false
-};
+  isOpen: false,
+  title: "TOPです。"
+}; // アクションが起こった時の処理
 
-var app = function app() {
+var _default = function _default() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case "IS_LOGIN":
-      return action.isLogin;
+    case _actionType.IS_OPEN:
+      return {
+        isOpen: action.state
+      };
 
     default:
       return state;
   }
 };
 
-exports.app = app;
-
-var onClickLoginBtn = function onClickLoginBtn() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var action = arguments.length > 1 ? arguments[1] : undefined;
-
-  switch (action.type) {
-    case "GET_LOGIN":
-      return action;
-
-    default:
-      return state;
-  }
-};
-
-exports.onClickLoginBtn = onClickLoginBtn;
-
-var onClickLogoutBtn = function onClickLogoutBtn() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var action = arguments.length > 1 ? arguments[1] : undefined;
-
-  switch (action.type) {
-    case "GET_LOGOUT":
-      return action;
-
-    default:
-      return state;
-  }
-};
-
-exports.onClickLogoutBtn = onClickLogoutBtn;
+exports.default = _default;
 },{"./action-type":"components/pages/Top/Redux/action-type.js"}],"Redux/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -25244,13 +25215,15 @@ exports.default = void 0;
 
 var _redux = require("redux");
 
-var _reducer = require("./reducer");
+var _reducer = _interopRequireDefault(require("./reducer"));
 
-var _reducer2 = require("../components/pages/Top/Redux/reducer");
+var _reducer2 = _interopRequireDefault(require("../components/pages/Top/Redux/reducer"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = (0, _redux.combineReducers)({
-  onClickLoginBtn: _reducer2.onClickLoginBtn,
-  onClickLogoutBtn: _reducer2.onClickLogoutBtn
+  App: _reducer.default,
+  Top: _reducer2.default
 });
 
 exports.default = _default;
@@ -25266,7 +25239,7 @@ var _redux = require("redux");
 
 var _reduxThunk = _interopRequireDefault(require("redux-thunk"));
 
-var _reducer = _interopRequireDefault(require("./reducer"));
+var _index = _interopRequireDefault(require("./index"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25274,7 +25247,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 var AppStore = function AppStore(initialState) {
-  var store = (0, _redux.createStore)(_reducer.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk.default)));
+  var store = (0, _redux.createStore)(_index.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk.default)));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
@@ -25290,7 +25263,7 @@ var AppStore = function AppStore(initialState) {
 
 var _default = AppStore;
 exports.default = _default;
-},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./reducer":"Redux/reducer.js","./index":"Redux/index.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","redux-thunk":"../node_modules/redux-thunk/es/index.js","./index":"Redux/index.js"}],"../node_modules/warning/warning.js":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -29083,36 +29056,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getLogout = exports.getLogin = exports.isLogin = void 0;
+exports.onClickOpen = void 0;
 
 var _actionType = require("./action-type");
 
-// import { isLogin } from "../../../../Redux/action";
-var isLogin = function isLogin(status) {
-  return {
-    type: _actionType.IS_LOGIN,
-    status: status
-  };
-};
-
-exports.isLogin = isLogin;
-
-var getLogin = function getLogin(status) {
+// アクション時の動き
+var onClickOpen = function onClickOpen(state) {
   return function (dispatch) {
-    dispatch(isLogin(true));
+    dispatch({
+      type: _actionType.IS_OPEN,
+      state: state
+    });
   };
 };
 
-exports.getLogin = getLogin;
-
-var getLogout = function getLogout(status) {
-  return {
-    type: _actionType.GET_LOGOUT,
-    status: status
-  };
-};
-
-exports.getLogout = getLogout;
+exports.onClickOpen = onClickOpen;
 },{"./action-type":"components/pages/Top/Redux/action-type.js"}],"components/pages/Top/index.js":[function(require,module,exports) {
 "use strict";
 
@@ -29127,7 +29085,9 @@ var _reactRedux = require("react-redux");
 
 var _redux = require("redux");
 
-var _actions = require("./Redux/actions");
+var Actions = _interopRequireWildcard(require("./Redux/actions"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29141,54 +29101,62 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 var Top =
 /*#__PURE__*/
-function (_React$Component) {
-  _inherits(Top, _React$Component);
+function (_React$PureComponent) {
+  _inherits(Top, _React$PureComponent);
 
-  function Top() {
+  function Top(props) {
+    var _this;
+
     _classCallCheck(this, Top);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Top).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Top).call(this, props));
+    _this.onClick = _this.onClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    return _this;
   }
 
   _createClass(Top, [{
+    key: "onClick",
+    value: function onClick() {
+      console.log("aaa", this.props);
+      var onClickOpen = this.props.onClickOpen;
+      onClickOpen(true);
+    }
+  }, {
     key: "render",
     value: function render() {
-      var getLogin = this.props.getLogin;
-      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"), _react.default.createElement("p", null, this.props.isLogin ? "ログインしてるよ" : "ログインしてないよ"), _react.default.createElement("button", {
-        onClick: getLogin
-      }, "\u30ED\u30B0\u30A4\u30F3"), _react.default.createElement("button", null, "\u30ED\u30B0\u30A2\u30A6\u30C8"));
+      console.log("this.props", this.props);
+      var _this$props = this.props,
+          isOpen = _this$props.isOpen,
+          title = _this$props.title;
+      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"), _react.default.createElement("p", null, "\u4ECA\u306F", String(isOpen), "\u3067\u3059"), _react.default.createElement("button", {
+        onClick: this.onClick
+      }, "\u30AA\u30FC\u30D7\u30F3"));
     }
   }]);
 
   return Top;
-}(_react.default.Component);
+}(_react.default.PureComponent);
 
 var mapStateToProps = function mapStateToProps(state) {
-  return state;
+  return state.Top;
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, _redux.bindActionCreators)({
-    getLogin: _actions.getLogin,
-    getLogout: _actions.getLogout
-  }, dispatch);
-}; // export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(Top);
+  return (0, _redux.bindActionCreators)(Actions, dispatch);
+};
 
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Top);
 
-var _default = Top;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
 "use strict";
@@ -29461,7 +29429,9 @@ var getLogin = function getLogin(state) {
 exports.getLogin = getLogin;
 
 var getLogout = function getLogout(state) {
-  dispatch(isLogout(state));
+  return function (dispatch) {
+    dispatch(isLogin(state));
+  };
 };
 
 exports.getLogout = getLogout;
@@ -29544,7 +29514,7 @@ var mapDispachToProps = function mapDispachToProps(dispath) {
       dispath((0, _action.getLogin)(true));
     },
     getLogout: function getLogout() {
-      dispath((0, _action.isLogin)(false));
+      dispath((0, _action.getLogout)(false));
     }
   };
 };
@@ -29605,7 +29575,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51522" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55593" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

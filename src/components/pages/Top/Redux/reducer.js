@@ -1,31 +1,16 @@
-import { GET_LOGIN, GET_LOGOUT, IS_LOGIN } from "./action-type";
+import { IS_OPEN } from "./action-type";
 
+// Reducerで初期値を設定
 const initialState = {
-  isLogin: false
+  isOpen: false,
+  title: "TOPです。"
 };
 
-export const app = (state = initialState, action) => {
+// アクションが起こった時の処理
+export default (state = initialState, action) => {
   switch (action.type) {
-    case "IS_LOGIN":
-      return action.isLogin;
-    default:
-      return state;
-  }
-};
-
-export const onClickLoginBtn = (state = false, action) => {
-  switch (action.type) {
-    case "GET_LOGIN":
-      return action;
-    default:
-      return state;
-  }
-};
-
-export const onClickLogoutBtn = (state = false, action) => {
-  switch (action.type) {
-    case "GET_LOGOUT":
-      return action;
+    case IS_OPEN:
+      return { isOpen: action.state };
     default:
       return state;
   }

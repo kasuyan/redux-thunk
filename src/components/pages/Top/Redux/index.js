@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
-import { onClickLoginBtn, onClickLogoutBtn } from "./reducer";
+import { Top } from "./reducer";
 
 export default combineReducers({
-  onClickLoginBtn,
-  onClickLogoutBtn
+  Top
 });
