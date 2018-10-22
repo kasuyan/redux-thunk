@@ -9,3 +9,12 @@ export const onClickOpen = state => {
     });
   };
 };
+
+export const onClickClose = state => {
+  return dispatch => {
+    dispatch({
+      type: IS_OPEN,
+      state
+    });
+  };
+};

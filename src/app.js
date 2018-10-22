@@ -5,6 +5,7 @@ import { isLogin, getLogin, getLogout } from "./Redux/action";
 
 class App extends React.Component {
   render() {
+    const { isLogin } = this.props.App;
     return (
       <div>
         <ul>
@@ -21,6 +22,7 @@ class App extends React.Component {
             <a href="/page3">Page3</a>
           </li>
         </ul>
+        <p>{isLogin ? "ログイン中" : "未ログイン"}</p>
         <button onClick={this.props.getLogin}>ログイン</button>
         <button onClick={this.props.getLogout}>ログアウト</button>
         <Router />
@@ -30,6 +32,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = state => {
+  console.log("app.mapStateToProps", state);
   return state;
 };
 

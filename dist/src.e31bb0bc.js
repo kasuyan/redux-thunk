@@ -29056,7 +29056,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.onClickOpen = void 0;
+exports.onClickClose = exports.onClickOpen = void 0;
 
 var _actionType = require("./action-type");
 
@@ -29071,7 +29071,51 @@ var onClickOpen = function onClickOpen(state) {
 };
 
 exports.onClickOpen = onClickOpen;
-},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"components/pages/Top/index.js":[function(require,module,exports) {
+
+var onClickClose = function onClickClose(state) {
+  return function (dispatch) {
+    dispatch({
+      type: _actionType.IS_OPEN,
+      state: state
+    });
+  };
+};
+
+exports.onClickClose = onClickClose;
+},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"Redux/action.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getLogout = exports.getLogin = void 0;
+
+var _actionType = require("./action-type");
+
+var getLogin = function getLogin(state) {
+  console.log("getLogin", state);
+  return function (dispatch) {
+    dispatch({
+      type: _actionType.IS_LOGIN,
+      isLogin: state
+    });
+  };
+};
+
+exports.getLogin = getLogin;
+
+var getLogout = function getLogout(state) {
+  console.log("getLogout", state);
+  return function (dispatch) {
+    dispatch({
+      type: _actionType.IS_LOGIN,
+      isLogin: state
+    });
+  };
+};
+
+exports.getLogout = getLogout;
+},{"./action-type":"Redux/action-type.js"}],"components/pages/Top/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29086,6 +29130,8 @@ var _reactRedux = require("react-redux");
 var _redux = require("redux");
 
 var Actions = _interopRequireWildcard(require("./Redux/actions"));
+
+var ActionLogin = _interopRequireWildcard(require("../../../Redux/action"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -29120,27 +29166,54 @@ function (_React$PureComponent) {
     _classCallCheck(this, Top);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Top).call(this, props));
-    _this.onClick = _this.onClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    console.log("Top.props", _this.props);
+    _this.onClickOpen = _this.onClickOpen.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onClickClose = _this.onClickClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onClickLogin = _this.onClickLogin.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onClickLogout = _this.onClickLogout.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
   _createClass(Top, [{
-    key: "onClick",
-    value: function onClick() {
-      console.log("aaa", this.props);
-      var onClickOpen = this.props.onClickOpen;
+    key: "onClickOpen",
+    value: function onClickOpen() {
+      var onClickOpen = this.props.TopAction.onClickOpen;
       onClickOpen(true);
+    }
+  }, {
+    key: "onClickClose",
+    value: function onClickClose() {
+      var onClickClose = this.props.TopAction.onClickClose;
+      onClickClose(false);
+    }
+  }, {
+    key: "onClickLogin",
+    value: function onClickLogin() {
+      var getLogin = this.props.AppAction.getLogin;
+      getLogin(true);
+    }
+  }, {
+    key: "onClickLogout",
+    value: function onClickLogout() {
+      var getLogout = this.props.AppAction.getLogout;
+      getLogout(false);
     }
   }, {
     key: "render",
     value: function render() {
-      console.log("this.props", this.props);
-      var _this$props = this.props,
-          isOpen = _this$props.isOpen,
-          title = _this$props.title;
-      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"), _react.default.createElement("p", null, "\u4ECA\u306F", String(isOpen), "\u3067\u3059"), _react.default.createElement("button", {
-        onClick: this.onClick
-      }, "\u30AA\u30FC\u30D7\u30F3"));
+      var isLogin = this.props.App.isLogin;
+      var _this$props$Top = this.props.Top,
+          isOpen = _this$props$Top.isOpen,
+          title = _this$props$Top.title;
+      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "TOP\u3067\u3059"), _react.default.createElement("p", null, isLogin ? "ログイン中" : "未ログイン"), _react.default.createElement("p", null, "\u4ECA\u306F", isOpen ? "オープン" : "クローズ", "\u3067\u3059"), _react.default.createElement("button", {
+        onClick: this.onClickOpen
+      }, "\u30AA\u30FC\u30D7\u30F3"), _react.default.createElement("button", {
+        onClick: this.onClickClose
+      }, "\u30AF\u30ED\u30FC\u30BA"), _react.default.createElement("p", null, _react.default.createElement("button", {
+        onClick: this.onClickLogin
+      }, "\u30ED\u30B0\u30A4\u30F3"), _react.default.createElement("button", {
+        onClick: this.onClickLogout
+      }, "\u30ED\u30B0\u30A2\u30A6\u30C8")));
     }
   }]);
 
@@ -29148,17 +29221,24 @@ function (_React$PureComponent) {
 }(_react.default.PureComponent);
 
 var mapStateToProps = function mapStateToProps(state) {
-  return state.Top;
+  console.log("Top.mapStateToProps", state);
+  return {
+    App: state.App,
+    Top: state.Top
+  };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return (0, _redux.bindActionCreators)(Actions, dispatch);
+  return {
+    AppAction: (0, _redux.bindActionCreators)(ActionLogin, dispatch),
+    TopAction: (0, _redux.bindActionCreators)(Actions, dispatch)
+  };
 };
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Top);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js","../../../Redux/action":"Redux/action.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29400,42 +29480,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = Router;
-},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","./components/pages/Top":"components/pages/Top/index.js","./components/pages/Page1":"components/pages/Page1/index.js","./components/pages/Page2":"components/pages/Page2/index.js","./components/pages/Page3":"components/pages/Page3/index.js"}],"Redux/action.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getLogout = exports.getLogin = exports.isLogin = void 0;
-
-var _actionType = require("./action-type");
-
-// return Object
-var isLogin = function isLogin(state) {
-  return {
-    type: _actionType.IS_LOGIN,
-    isLogin: state
-  };
-};
-
-exports.isLogin = isLogin;
-
-var getLogin = function getLogin(state) {
-  return function (dispatch) {
-    dispatch(isLogin(state));
-  };
-};
-
-exports.getLogin = getLogin;
-
-var getLogout = function getLogout(state) {
-  return function (dispatch) {
-    dispatch(isLogin(state));
-  };
-};
-
-exports.getLogout = getLogout;
-},{"./action-type":"Redux/action-type.js"}],"app.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/es/index.js","./components/pages/Top":"components/pages/Top/index.js","./components/pages/Page1":"components/pages/Page1/index.js","./components/pages/Page2":"components/pages/Page2/index.js","./components/pages/Page3":"components/pages/Page3/index.js"}],"app.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29485,6 +29530,7 @@ function (_React$Component) {
   _createClass(App, [{
     key: "render",
     value: function render() {
+      var isLogin = this.props.App.isLogin;
       return _react.default.createElement("div", null, _react.default.createElement("ul", null, _react.default.createElement("li", null, _react.default.createElement("a", {
         href: "/"
       }, "TOP")), _react.default.createElement("li", null, _react.default.createElement("a", {
@@ -29493,7 +29539,7 @@ function (_React$Component) {
         href: "/page2"
       }, "Page2")), _react.default.createElement("li", null, _react.default.createElement("a", {
         href: "/page3"
-      }, "Page3"))), _react.default.createElement("button", {
+      }, "Page3"))), _react.default.createElement("p", null, isLogin ? "ログイン中" : "未ログイン"), _react.default.createElement("button", {
         onClick: this.props.getLogin
       }, "\u30ED\u30B0\u30A4\u30F3"), _react.default.createElement("button", {
         onClick: this.props.getLogout
@@ -29505,6 +29551,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 var mapStateToProps = function mapStateToProps(state) {
+  console.log("app.mapStateToProps", state);
   return state;
 };
 
@@ -29575,7 +29622,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55593" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53814" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
