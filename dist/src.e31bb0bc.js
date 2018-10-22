@@ -25205,7 +25205,47 @@ var _default = function _default() {
 };
 
 exports.default = _default;
-},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"Redux/index.js":[function(require,module,exports) {
+},{"./action-type":"components/pages/Top/Redux/action-type.js"}],"components/pages/Page1/Redux/action-type.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RANKING_DATA = void 0;
+var RANKING_DATA = "PAGE1/RANKING_DATA";
+exports.RANKING_DATA = RANKING_DATA;
+},{}],"components/pages/Page1/Redux/reducer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _actionType = require("./action-type");
+
+var initialState = {
+  rankData: []
+};
+
+var _default = function _default() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _actionType.RANKING_DATA:
+      console.log("action", action.respons.results);
+      return {
+        rankData: action.respons.results
+      };
+
+    default:
+      return state;
+  }
+};
+
+exports.default = _default;
+},{"./action-type":"components/pages/Page1/Redux/action-type.js"}],"Redux/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25219,15 +25259,18 @@ var _reducer = _interopRequireDefault(require("./reducer"));
 
 var _reducer2 = _interopRequireDefault(require("../components/pages/Top/Redux/reducer"));
 
+var _reducer3 = _interopRequireDefault(require("../components/pages/Page1/Redux/reducer"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = (0, _redux.combineReducers)({
   App: _reducer.default,
-  Top: _reducer2.default
+  Top: _reducer2.default,
+  Page1: _reducer3.default
 });
 
 exports.default = _default;
-},{"redux":"../node_modules/redux/es/redux.js","./reducer":"Redux/reducer.js","../components/pages/Top/Redux/reducer":"components/pages/Top/Redux/reducer.js"}],"Redux/store.js":[function(require,module,exports) {
+},{"redux":"../node_modules/redux/es/redux.js","./reducer":"Redux/reducer.js","../components/pages/Top/Redux/reducer":"components/pages/Top/Redux/reducer.js","../components/pages/Page1/Redux/reducer":"components/pages/Page1/Redux/reducer.js"}],"Redux/store.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29238,7 +29281,38 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Top);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js","../../../Redux/action":"Redux/action.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Top/Redux/actions.js","../../../Redux/action":"Redux/action.js"}],"components/pages/Page1/Redux/actions.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fetchRanking = void 0;
+
+var _actionType = require("./action-type");
+
+var fetchRanking = function fetchRanking(state) {
+  console.log("fetchRanking");
+  return function (dispatch) {
+    fetch("http://localhost:3000/ranking", {
+      method: "GET"
+    }).then(function (respons) {
+      console.log("fetchRanking", respons);
+      return respons;
+    }).then(function (respons) {
+      return respons.json();
+    }).then(function (respons) {
+      console.log("resluts", respons);
+      dispatch({
+        type: _actionType.RANKING_DATA,
+        respons: respons
+      });
+    });
+  };
+};
+
+exports.fetchRanking = fetchRanking;
+},{"./action-type":"components/pages/Page1/Redux/action-type.js"}],"components/pages/Page1/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29249,6 +29323,12 @@ exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _reactRedux = require("react-redux");
+
+var _redux = require("redux");
+
+var Actions = _interopRequireWildcard(require("./Redux/actions"));
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29282,6 +29362,13 @@ function (_React$Component) {
   }
 
   _createClass(Page1, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      console.log("Page1.props", this.props);
+      var fetchRanking = this.props.Page1Action.fetchRanking;
+      fetchRanking();
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react.default.createElement("section", null, _react.default.createElement("h1", null, "Page1\u3067\u3059"));
@@ -29295,10 +29382,16 @@ var mapStateToProps = function mapStateToProps(state) {
   return state;
 };
 
-var _default = (0, _reactRedux.connect)(mapStateToProps)(Page1);
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    Page1Action: (0, _redux.bindActionCreators)(Actions, dispatch)
+  };
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Page1);
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js"}],"components/pages/Page2/index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-redux":"../node_modules/react-redux/es/index.js","redux":"../node_modules/redux/es/redux.js","./Redux/actions":"components/pages/Page1/Redux/actions.js"}],"components/pages/Page2/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29622,7 +29715,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53814" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63152" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
