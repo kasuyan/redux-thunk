@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default class Page2 extends React.Component {
   render() {
@@ -6,6 +6,6 @@ export default class Page2 extends React.Component {
       <section>
         <h1>Page2です</h1>
       </section>
-    )
+    );
   }
 }

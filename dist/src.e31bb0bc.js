@@ -29364,14 +29364,18 @@ function (_React$Component) {
   _createClass(Page1, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      console.log("Page1.props", this.props);
       var fetchRanking = this.props.Page1Action.fetchRanking;
       fetchRanking();
     }
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "Page1\u3067\u3059"));
+      var rankData = this.props.Page1.rankData;
+      return _react.default.createElement("section", null, _react.default.createElement("h1", null, "Page1\u3067\u3059 react-thunk"), rankData.map(function (item) {
+        return _react.default.createElement("li", {
+          key: item.rank
+        }, item.rank, "\u4F4D\uFF1A", item.text);
+      }));
     }
   }]);
 
@@ -29715,7 +29719,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63152" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55172" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
