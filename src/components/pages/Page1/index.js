@@ -5,21 +5,33 @@ import * as Actions from "./Redux/actions";
 
 class Page1 extends React.Component {
   componentDidMount() {
+    console.log("Page1.props=", this.props, this.props.Page1.rankData.length);
+    if (this.props.Page1.rankData.length) {
+      return;
+    }
+
     const { fetchRanking } = this.props.Page1Action;
+    console.log("fetch!!!");
     fetchRanking();
   }
 
   render() {
     const { rankData } = this.props.Page1;
+    const { fetchRanking } = this.props.Page1Action;
+    if (!rankData.length) {
+      return null;
+    }
+
     return (
       <section>
         <h1>Page1です react-thunk</h1>
 
-        {rankData.map(item => (
-          <li key={item.rank}>
+        {rankData.map((item, index) => (
+          <li key={index}>
             {item.rank}位：{item.text}
           </li>
         ))}
+        <button onClick={fetchRanking}>もっとみる</button>
       </section>
     );
   }

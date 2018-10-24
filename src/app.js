@@ -8,20 +8,6 @@ class App extends React.Component {
     const { isLogin } = this.props.App;
     return (
       <div>
-        <ul>
-          <li>
-            <a href="/">TOP</a>
-          </li>
-          <li>
-            <a href="/page1">Page1</a>
-          </li>
-          <li>
-            <a href="/page2">Page2</a>
-          </li>
-          <li>
-            <a href="/page3">Page3</a>
-          </li>
-        </ul>
         <p>{isLogin ? "ログイン中" : "未ログイン"}</p>
         <button onClick={this.props.getLogin}>ログイン</button>
         <button onClick={this.props.getLogout}>ログアウト</button>
